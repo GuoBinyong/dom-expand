@@ -14,25 +14,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GuoBinyong/jsexpand"
+    "url": "https://github.com/GuoBinyong/dom-expand"
   },
   "keywords": [
     "扩展",
-    "JS扩展",
-    "JS原生扩展",
+    "dom扩展",
+    "browser扩展",
+    "浏览器扩展",
     "JavaScript扩展",
     "JavaScript原生扩展",
     "原生扩展",
-    "Object",
-    "Array",
-    "JSON",
-    "String",
-    "Number",
-    "Math",
-    "Date",
-    "Promise",
-    "URL",
-    "URLSearchParams"
+    "Element",
+    "EventTarget",
+    "Node"
   ],
   "author": "郭斌勇",
   "license": "ISC",

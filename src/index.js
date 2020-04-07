@@ -1,4 +1,4 @@
 import "./Element"
 import "./EventTarget"
-import "./FromData"
+import "./FormData"
 import "./Node"

@@ -15,7 +15,7 @@ Node.prototype.isChildNodeOf = function isChildNodeOf(node) {
   } else {
     return false;
   }
-}
+};
 
 
 
@@ -38,7 +38,7 @@ Node.prototype.isChildElementOf = function isChildElementOf(element) {
   } else {
     return false;
   }
-}
+};
 
 
 

@@ -1,4 +1,4 @@
-var fdPrototype = FormData.prototype
+var fdPrototype = FormData.prototype;
 
 
 

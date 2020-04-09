@@ -19,7 +19,7 @@ Element.prototype.scrollDistanceFromParent = function (parentNode) {
   }
 
   return {x: left,y: top, left: left, top: top };
-}
+};
 
 
 
@@ -43,7 +43,7 @@ Element.prototype.offsetFromDocument = function () {
   }
 
   return {x: left,y: top, left: left, top: top };
-}
+};
 
 
 
@@ -64,7 +64,7 @@ Element.prototype.distanceToDom = function (toDom) {
   var y = toRect.top - fromRect.top;
 
   return {x: x,y: y,left: x,top: y};
-}
+};
 
 
 //元素位置距离：结束
@@ -344,7 +344,7 @@ Element.prototype.calcClientLengthOfLines = function (lineNumber) {
 
   return {length:length, visible:isVisible} ;
 
-}
+};
 
 
 
@@ -385,7 +385,7 @@ Element.prototype.setNumberOfLines = function (lineNumber) {
   }
 
 
-}
+};
 
 
 
@@ -449,7 +449,7 @@ Element.prototype.setNumberOfChars = function (charNumber) {
   }
 
 
-}
+};
 
 
 
@@ -466,7 +466,7 @@ Element.prototype.setNumberOfChars = function (charNumber) {
 Element.prototype.setNumberOfLinesAndChars = function (lineNumber,charNumber) {
   this.setNumberOfLines(lineNumber);
   this.setNumberOfChars(charNumber);
-}
+};
 
 
 

@@ -86,6 +86,7 @@ let propertyDescriptors = {
    * isVertical : boolean  表示元素的内容是否是垂直方向排列
    */
   isVertical: {
+    configurable:true,
     enumerable:false,
     get:function(){
       var compStyle = globalThis.getComputedStyle(this);
@@ -110,6 +111,7 @@ let propertyDescriptors = {
    * computedLineHeight : number  返回元素的计算后的行高
    */
   computedLineHeight:{
+    configurable:true,
     enumerable:false,
     get:function(){
       var compStyle = globalThis.getComputedStyle(this);
@@ -130,6 +132,7 @@ let propertyDescriptors = {
    * contentHeight : number   元素内容区域的高度
    */
   contentHeight: {
+    configurable:true,
     enumerable: false,
     get: function(){
       var compStyle = globalThis.getComputedStyle(this);
@@ -146,6 +149,7 @@ let propertyDescriptors = {
    * contentWidth : number   元素内容区域的宽度
    */
   contentWidth: {
+    configurable:true,
     enumerable: false,
     get: function(){
       var compStyle = globalThis.getComputedStyle(this);
@@ -164,6 +168,7 @@ let propertyDescriptors = {
    * scrollContentHeight : number   元素的滑动内容区域的高度
    */
   scrollContentHeight: {
+    configurable:true,
     enumerable: false,
     get: function(){
       var compStyle = globalThis.getComputedStyle(this);
@@ -182,6 +187,7 @@ let propertyDescriptors = {
    * scrollContentWidth : number   元素的滑动内容区域的宽度
    */
   scrollContentWidth: {
+    configurable:true,
     enumerable: false,
     get: function(){
       var compStyle = globalThis.getComputedStyle(this);
@@ -201,6 +207,7 @@ let propertyDescriptors = {
    * numberOfLinesOnClient : number  返回能在元素的 client 中能显示文字的最大行数
    */
   numberOfLinesOnClient: {
+    configurable:true,
     enumerable: false,
     get: function () {
       var length = this.isVertical ? this.contentWidth : this.contentHeight ;
@@ -214,6 +221,7 @@ let propertyDescriptors = {
    * numberOfCharsPerLineOnClient : number  返回能在元素的 client 中每行能显示文字的最大字数
    */
   numberOfCharsPerLineOnClient: {
+    configurable:true,
     enumerable: false,
     get: function () {
       var compStyle = globalThis.getComputedStyle(this);
@@ -233,6 +241,7 @@ let propertyDescriptors = {
    * 该值是 对 numberOfLinesOnClient 和 numberOfCharsPerLineOnClient 四舍五入后的乘积
    */
   numberOfCharsOnClient: {
+    configurable:true,
     enumerable: false,
     get: function () {
       var roundLineNum = Math.round(this.numberOfLinesOnClient);
@@ -250,6 +259,7 @@ let propertyDescriptors = {
    * numberOfLinesOnScroll : number  返回能在元素的 滑动区域 中能显示文字的最大行数
    */
   numberOfLinesOnScroll: {
+    configurable:true,
     enumerable: false,
     get: function () {
       var length = this.isVertical ? this.scrollContentWidth : this.scrollContentHeight ;
@@ -263,6 +273,7 @@ let propertyDescriptors = {
    * numberOfCharsPerLineOnScroll : number  返回能在元素的  滑动区域 中每行能显示文字的最大字数
    */
   numberOfCharsPerLineOnScroll: {
+    configurable:true,
     enumerable: false,
     get: function () {
       var compStyle = globalThis.getComputedStyle(this);
@@ -282,6 +293,7 @@ let propertyDescriptors = {
    * 该值是 对 numberOfLinesOnScroll 和 numberOfCharsPerLineOnScroll 四舍五入后的乘积
    */
   numberOfCharsOnScroll: {
+    configurable:true,
     enumerable: false,
     get: function () {
       var roundLineNum = Math.round(this.numberOfLinesOnScroll);

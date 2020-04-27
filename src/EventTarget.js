@@ -17,6 +17,8 @@ let propertyDescriptors = {
    * @param useCapture : boolean 可选。布尔值，指定事件是否 在捕获或冒泡阶段执行。
    */
   byAddEventListener: {
+    configurable:true,
+    writable:true,
     enumerable: false,
     value: function (event, handler, useCapture) {
       if (this.addEventListener) {
@@ -36,6 +38,8 @@ let propertyDescriptors = {
    * @param useCapture : boolean 可选。布尔值，指定移除事件句柄的阶段。
    */
   byRemoveEventListener: {
+    configurable:true,
+    writable:true,
     enumerable: false,
     value: function (event, handler, useCapture) {
       if (this.removeEventListener) {
@@ -57,6 +61,8 @@ let propertyDescriptors = {
    * @param useCapture : boolean 可选。布尔值，指定事件是否 在捕获或冒泡阶段执行。
    */
   byAddListenerForMultipleEvent: {
+    configurable:true,
+    writable:true,
     enumerable: false,
     value: function (eventList, handler, useCapture) {
       eventList.forEach((event)=>{
@@ -74,6 +80,8 @@ let propertyDescriptors = {
    * @param useCapture : boolean 可选。布尔值，指定移除事件句柄的阶段。
    */
   byRemoveListenerForMultipleEvent: {
+    configurable:true,
+    writable:true,
     enumerable: false,
     value: function (eventList, handler, useCapture) {
       eventList.forEach((event)=>{
@@ -93,6 +101,8 @@ let propertyDescriptors = {
    * @param useCapture : boolean 可选。布尔值，指定事件是否 在捕获或冒泡阶段执行。
    */
   byAddMultipleListenerForEvent: {
+    configurable:true,
+    writable:true,
     enumerable: false,
     value: function (event, handlerList, useCapture) {
       handlerList.forEach((handler)=>{
@@ -110,6 +120,8 @@ let propertyDescriptors = {
    * @param useCapture : boolean 可选。布尔值，指定移除事件句柄的阶段。
    */
   byRemoveMultipleListenerForEvent: {
+    configurable:true,
+    writable:true,
     enumerable: false,
     value: function (event, handlerList, useCapture) {
       handlerList.forEach((handler)=>{

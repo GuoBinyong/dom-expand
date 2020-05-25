@@ -1,6 +1,6 @@
 {
   "name": "dom-expand",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "dom-expand 提供了对 dom 中原生类型功能的扩展（Element、EventTarget、Node 等等），也提供了一些工具函数；",
   "main": "dist/dom-expand.cjs.js",
   "module": "dist/dom-expand.esm.js",
@@ -39,9 +39,17 @@
     "types/[^.]*"
   ],
   "devDependencies": {
-    "@rollup/plugin-buble": "^0.21.3",
+    "@babel/core": "^7.9.6",
+    "@babel/plugin-transform-runtime": "^7.9.6",
+    "@babel/preset-env": "^7.9.5",
+    "@rollup/plugin-babel": "^5.0.2",
     "@rollup/plugin-commonjs": "^11.1.0",
     "@rollup/plugin-node-resolve": "^7.1.3",
+    "es-expand": "^1.0.16",
+    "eslint": "^7.0.0",
     "rollup": "^2.7.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.9.6"
   }
 }

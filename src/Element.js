@@ -1,14 +1,16 @@
 //元素位置距离：开始
 
-// FIXME: 此逻辑不对，scrollTop 或 scrollLeft 并不是表示元素在父元素的偏移量，而是表示作为滑动窗容器的元素其内容的滑动偏移量；可改为 通过 offsetFromDocument  来计算
 /**
  * 计算元素相对指定的祖先节点 parentNode 的偏移量
+ * 算法：可视偏移量 + this 和 parentNode 两节链接中所有父元素的滑动偏移量（scrollTop 或 scrollLeft）
  * @param parentNode : Element  祖先节点
  * @return {x:number,y:number,left:number,top:number}   x、leftL: 水平方向的偏移量；y、top : 垂直方向的偏移量；
  */
 Element.prototype.scrollDistanceFromParent = function (parentNode) {
-  var top = this.scrollTop;
-  var left = this.scrollLeft;
+  var currRect = this.getBoundingClientRect();
+  var parentRect = nextNode.getBoundingClientRect();
+  var top = parentRect.top - currRect.top + parentNode.scrollTop;
+  var left = parentRect.left - currRect.left + parentNode.scrollLeft;
 
   var nextNode = this.parentNode;
 

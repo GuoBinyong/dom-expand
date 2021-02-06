@@ -7,7 +7,7 @@
 Node.prototype.isChildNodeOf = function isChildNodeOf(node) {
   var parent = this.parentNode;
   if (parent){
-    if (node.isSameNode(parent)) {
+    if (node === parent) {
       return true;
     }else {
       return parent.isChildNodeOf(node);
@@ -30,7 +30,7 @@ Node.prototype.isChildNodeOf = function isChildNodeOf(node) {
 Node.prototype.isChildElementOf = function isChildElementOf(element) {
   var parent = this.parentElement;
   if (parent){
-    if (element.isSameNode(parent)) {
+    if (element === parent) {
       return true;
     }else {
       return parent.isChildElementOf(element);
@@ -54,7 +54,7 @@ Node.prototype.isChildElementOf = function isChildElementOf(element) {
  */
 if (!Node.prototype.contains) {
   Node.prototype.contains = function contains(otherNode) {
-    return this.isSameNode(otherNode) || otherNode.isChildNodeOf(this);
+    return this === otherNode || otherNode.isChildNodeOf(this);
   }
 }
 

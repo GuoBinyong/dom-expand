@@ -1,12 +1,12 @@
 //元素位置距离：开始
 
 /**
- * 计算元素相对指定的祖先节点 parentNode 的偏移量
+ * 获取元素相对指定的祖先节点 parentNode 的滑动偏移量
  * 算法：可视偏移量 + this 和 parentNode 两节链接中所有父元素的滑动偏移量（scrollTop 或 scrollLeft）
  * @param parentNode : Element  祖先节点
  * @return {x:number,y:number,left:number,top:number}   x、leftL: 水平方向的偏移量；y、top : 垂直方向的偏移量；
  */
-Element.prototype.scrollDistanceFromParent = function (parentNode) {
+Element.prototype.getScrollOffsetFromParent = function (parentNode) {
   var currRect = this.getBoundingClientRect();
   var parentRect = nextNode.getBoundingClientRect();
   var top = parentRect.top - currRect.top + parentNode.scrollTop;
@@ -29,10 +29,10 @@ Element.prototype.scrollDistanceFromParent = function (parentNode) {
 
 
 /**
- * 计算元素相对文档的偏移量
+ * 获取元素相对文档的定位偏移量
  * @return {x:number,y:number,left:number,top:number}   x、leftL: 水平方向的偏移量；y、top : 垂直方向的偏移量；
  */
-Element.prototype.offsetFromDocument = function () {
+Element.prototype.getPositionOffsetFromDocument = function () {
   var top = this.offsetTop;
   var left = this.offsetLeft;
 
@@ -53,11 +53,11 @@ Element.prototype.offsetFromDocument = function () {
 
 
 /**
- * 计算指定元素相对于当前元素之间的可视的距离坐标
+ * 获取指定元素相对于当前元素之间的可视的距离坐标
  * @param toDom : Element  指定元素
  * @return {x:number,y:number,left:number,top:number}  x、left: 水平方向的的距离；y、top : 垂直方向的距离；
  */
-Element.prototype.distanceToDom = function (toDom) {
+Element.prototype.getVisibleOffsetToDom = function (toDom) {
 
   var fromRect = this.getBoundingClientRect();
   var toRect = toDom.getBoundingClientRect();

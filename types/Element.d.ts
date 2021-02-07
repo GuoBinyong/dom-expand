@@ -14,26 +14,26 @@ interface ComPoint {
 interface Element {
 
   /**
-   * 计算元素相对指定的祖先节点 parentNode 的偏移量
+   * 获取元素相对指定的祖先节点 parentNode 的滑动偏移量
    * @param parentNode : Element  祖先节点
    * @return {x:number,y:number,left:number,top:number}   x、leftL: 水平方向的偏移量；y、top : 垂直方向的偏移量；
    */
-  scrollDistanceFromParent(parentNode: Element): ComPoint;
+  getScrollOffsetFromParent(parentNode: Element): ComPoint;
 
 
   /**
-   * 计算元素相对文档的偏移量
+   * 获取元素相对文档的定位偏移量
    * @return {x:number,y:number,left:number,top:number}   x、leftL: 水平方向的偏移量；y、top : 垂直方向的偏移量；
    */
-  offsetFromDocument(): ComPoint;
+  getPositionOffsetFromDocument(): ComPoint;
 
 
   /**
-   * 计算指定元素相对于当前元素之间的可视的距离坐标
+   * 获取指定元素相对于当前元素之间的可视的距离坐标
    * @param toDom : Element  指定元素
    * @return {x:number,y:number,left:number,top:number}  x、left: 水平方向的的距离；y、top : 垂直方向的距离；
    */
-  distanceToDom(toDom: Element): ComPoint;
+  getVisibleOffsetToDom(toDom: Element): ComPoint;
 
 
   //元素位置距离：结束

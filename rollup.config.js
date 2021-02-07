@@ -1,8 +1,14 @@
-import "es-expand"
+import {removeScope,getBaseNameOfHumpFormat,getDependencieNames,toStringTag} from "package-tls";
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import babel from '@rollup/plugin-babel';
+import json from '@rollup/plugin-json';
+import { terser } from "rollup-plugin-terser";
+import {dirname} from "path"
 import pkg from './package.json';
+
+import tsconfig from "./tsconfig.json";
+import typescript from '@rollup/plugin-typescript';
+import babel from '@rollup/plugin-babel';
 
 
 // 配置 ---------------------------------
@@ -18,37 +24,85 @@ import pkg from './package.json';
 共用的配置
 */
 
+const input = 'src/index.ts';   // 输入（入口）文件
+const outputDir = dirname(pkg.main || "dist/*");    //输出目录
+const pkgName = getBaseNameOfHumpFormat(pkg.name);  //驼峰格式的 pkg.name
+const extensions = ['.tsx', '.ts','.jsx','.mjs', '.js', '.json','.node'];  // 默认查找的文件扩展名
+
+
+// rollup 中共用的 output 选项
+const shareOutput = {
+	// 要插入到生成文件顶部的字段串；
+	banner: toStringTag(2)`
+/*
+${pkg.name}	${pkg.version && "v"+ pkg.version}
+author: ${pkg.author}
+license: ${pkg.license}
+homepage: ${pkg.homepage}
+repository: ${pkg.repository}
+description: ${pkg.description}
+*/
+`,
+	// 要插入到生成文件底部的字段串；
+	// footer:"",
+
+	// 输出文件的存放目录；只用于会生成多个 chunks 的时候
+	dir:"./",
+	// 生成 chunks 名字的格式
+	entryFileNames:`${outputDir}/${removeScope(pkg.name)}.[format].js`
+};
+
+
+
+
+
+
 // 预设
 const presets = [
 	'@babel/preset-env'
 ];
 
 // 插件
+
+
+/*
+@babel/plugin-transform-runtime 能够重复使用 Babel 的注入帮助器 Helper 代码，以节省代码大小。
+注意：如果 rollup 的 format 设置为 "es" ， 则应将 useESModules 设置为 true，否则，应将 useESModules 设置 false ；
+*/
+const pluginTransformRuntime = ['@babel/plugin-transform-runtime', {useESModules: false, corejs: { version: 3 }}];
+
 const plugins = [
-	/*
-	@babel/plugin-transform-runtime 能够重复使用 Babel 的注入帮助器 Helper 代码，以节省代码大小。
-	注意：如果 rollup 的 format 设置为 "es" ， 则应将 useESModules 设置为 true，否则，应将 useESModules 设置 false ；
-	*/
-	['@babel/plugin-transform-runtime', { useESModules: false }]
+	// Stage 2
+	["@babel/plugin-proposal-decorators", { "legacy": false, "decoratorsBeforeExport": true }],
+	"@babel/plugin-proposal-function-sent",
+	"@babel/plugin-proposal-export-namespace-from",
+	"@babel/plugin-proposal-numeric-separator",
+	"@babel/plugin-proposal-throw-expressions",
+
+	// Stage 3
+	"@babel/plugin-syntax-dynamic-import",
+	"@babel/plugin-syntax-import-meta",
+	["@babel/plugin-proposal-class-properties", { "loose": true }],
+	"@babel/plugin-proposal-json-strings",
+
+	pluginTransformRuntime
 ];
+
+
 
 // babel的共用配置
 const babelConf = {
 	babelHelpers:"runtime",    //指定插入 babel 的 帮助器 Helper 的方式
 	exclude: ['node_modules/**'],  // 指定应被 babel 忽略的文件的匹配模式；
-	// extensions:['.js', '.jsx', '.es6', '.es', '.mjs'],  // 应该被 babel 转换的所有文件的扩展名数组；这些扩展名的文件会被 babel 处理，其它文件刚会被 babel 忽略；
+	extensions: extensions,  // 应该被 babel 转换的所有文件的扩展名数组；这些扩展名的文件会被 babel 处理，其它文件刚会被 babel 忽略；默认值：['.js', '.jsx', '.es6', '.es', '.mjs']
 	presets: presets,
-	/*
-	@babel/plugin-transform-runtime 能够重复使用 Babel 的注入帮助器 Helper 代码，以节省代码大小。
-	注意：如果 rollup 的 format 设置为 "es" ， 则应将 useESModules 设置为 true，否则，应将 useESModules 设置 false ；
-	*/
 	plugins: plugins
 };
 
 
 // 共用的 rollup 配置
 const shareConf = {
-	input: 'src/index',
+	input: input,
 	external: getDependencieNames(pkg),  //移除 package.json 中所有的依赖包
 	plugins: [
 		// 使用node解析算法查找模块
@@ -64,25 +118,33 @@ const shareConf = {
 			extensions   类型: Array[...String]    默认值: ['.mjs', '.js', '.json', '.node']
 			扩展文件名
 			*/
-			// extensions:['.mjs', '.js', '.json', '.node']
+			extensions:extensions
 		}),
+		json(), //将 json 文件转为 ES6 模块
 		commonjs(), // 将依赖的模块从 CommonJS 模块规范转换成 ES2015 模块规范
+		typescript({
+			// 如果 tsconfig 中的 declarationDir 没有定义，则优先使用 package.json 中的 types 或 typings 定义的目录， 默认值：outputDir
+			declarationDir: tsconfig.declarationDir || dirname(pkg.types || pkg.typings || (outputDir+"/*")),
+			// 用来给 输出目录 outDir 提供源文件目录结构的，以便生成的文件中的导入导出能够正确地访问；
+			rootDir: dirname(input),
+		}),  // 将 TypeScript 转换为 JavaScript
 		babel(babelConf)
 	]
 };
 
 
+
 // 导出的 rollup 配置
 export default [
 	/*
-	模块友好的构建
+	适合模块的构建
 	特点：
-	   - 仅只能以 js模块 的方式被引入
+	   - 以 js模块 的方式被引入
 	   - 移除了 node_modules 中的所有依赖
 	*/
 	{
 		...shareConf,
-		output: { file: pkg.module || `dist/${removeScope(pkg.name)}.esm.js`, format: 'es' },  // ES module
+		output: {...shareOutput, format: 'es' },  // ES module
 		plugins: [
 			...shareConf.plugins.slice(0,shareConf.plugins.length - 1),
 			babel({
@@ -93,7 +155,7 @@ export default [
 					@babel/plugin-transform-runtime 能够重复使用 Babel 的注入帮助器 Helper 代码，以节省代码大小。
 					注意：如果 rollup 的 format 设置为 "es" ， 则应将 useESModules 设置为 true，否则，应将 useESModules 设置 false ；
 					*/
-					['@babel/plugin-transform-runtime', { useESModules: true }]
+					[pluginTransformRuntime[0],{...pluginTransformRuntime[1],useESModules: true }]
 				]
 			})
 		]
@@ -101,71 +163,38 @@ export default [
 
 	{
 		...shareConf,
-		output: { file: pkg.main || `dist/${removeScope(pkg.name)}.cjs.js`, format: 'cjs' }, // CommonJS
+		output: [
+			{...shareOutput, format: 'cjs' }, // CommonJS
+			{...shareOutput, format: 'amd' }, // amd
+			/*
+			umd：兼容各种引入方式
+			可以以 AMD 或 CommonJS 模块的方式引入，也可以用 <script> 标签直接引入;
+			由于包中删除了依赖，所以若以 <script> 标签的方式引入，则需要用 <script> 标签的方式先将其依赖引入
+			*/
+			{
+				...shareOutput,
+				format: 'umd',
+				name: pkgName,  //驼峰格式的 pkg.name
+				plugins: [terser()]     //压缩代码
+			} // umd
+		]
 	},
 
-
 	/*
-	兼容各种引入方式的构建
+	适合直接执行的构建
 	特点：
 	   - 可用 <script> 标签直接引入
-	   - 也可用 AMD、CommonJS 的模块化方案引入；
 	   - 将所有依赖都构建在了一起
+	   - 对代码进行了压缩
 	*/
 	{
 		...shareConf,
-		external:undefined,   //不移除任何依赖
+		external:getDependencieNames(pkg,"peerDependencies"),   //只移除 peerDependencies 中的依赖
 		output: {
-			// 如果 pkg.browser 是字符串类型，则 file 为 pkg.browser，否则为 `<包名>.umd.js`
-			file: typeof pkg.browser === "string" ? pkg.browser : `dist/${removeScope(pkg.name)}.umd.js`,
-			format: 'umd',
-			name: toHumpFormat(pkg.name)  //驼峰格式的 pkg.name
-		}  // umd
+			...shareOutput,
+			format: 'iife',
+			name: pkgName,  //驼峰格式的 pkg.name
+			plugins: [terser()]     //压缩代码
+		}  // iife
 	}
 ];
-
-
-
-
-
-
-
-
-
-
-
-// 工具 ---------------------------------
-
-
-/**
- * Remove the scope prefix for the package name
- * 去除包名的 scope 前缀
- *
- * @param  pkgName : string    name of the package 包的名字
- * @returns string  Return the name after removing the scope prefix  返回去除 scope 前缀后的名字
- */
-function removeScope(pkgName) {return pkgName.replace(/@[^/]+\//,"")}
-
-
-/**
- * convert the name of the package from a divider format to a hump format, and the scope prefix is automatically removed
- * 把包的名字从分隔线格式转换成驼峰格式，并且会自动去除 scope 前缀
- *
- * @param  pkgName : string    name of the package 包的名字
- * @param separators ?: string | Array<string>   optional; default: ["-","_"] ; separator or separator good array ["-","_"]； 可选；默认值：["-","_"] ；分隔符，或 包含多个分隔符的数组
- * @returns string  return hump format string  返回驼峰格式的字符串
- */
-function toHumpFormat(pkgName, separators) {return removeScope(pkgName).toHumpFormat(separators)}
-
-
-/**
- * 获取 package.json 中配置的指定依赖类型中的所有依赖的名字列表
- * Get a list of names for all dependencies in the specified dependency type configured in package.json
- * @param package:object  必选；package.json 中的配置对象； Configuration objects in package.json
- * @param depTypes?: string | string[]    可选；默认值：["dependencies","optionalDependencies","peerDependencies"]；依赖类型的名字 或者 名字数组；     Optional; default: ["dependencies","optionalDependencies","peerDependencies"];
- * @returns Array<string>  返回包含指定依赖类型中的所有依赖名字的数组； Returns an array of all dependent names in the specified dependency type
- */
-function getDependencieNames(packageConf,depTypes){
-	depTypes = depTypes ? (typeof depTypes === "string" ? [depTypes] : depTypes) : ["dependencies","optionalDependencies","peerDependencies"];
-	return Object.keys(Object.assign({},...depTypes.map(depType=>packageConf[depType])));
-}

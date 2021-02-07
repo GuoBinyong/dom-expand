@@ -1,6 +1,6 @@
 {
   "name": "dom-expand",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "dom-expand 提供了对 dom 中原生类型功能的扩展（Element、EventTarget、Node 等等），也提供了一些工具函数；",
   "main": "dist/dom-expand.cjs.js",
   "module": "dist/dom-expand.es.js",
